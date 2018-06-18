@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;　//　LoadSceneを使うために必要！！
 
 public class PlayerController : MonoBehaviour {
 
@@ -16,8 +17,9 @@ public class PlayerController : MonoBehaviour {
     }
 	
 	void Update () {
-        //ジャンプする
-        if (Input.GetKeyDown(KeyCode.Space)){
+        //　ジャンプする
+        if(Input.GetKeyDown(KeyCode.Space) &&
+            this.rigid2D.velocity.y == 0) {
             this.rigid2D.AddForce(transform.up * this.jumpForce);
         }
 
@@ -39,8 +41,18 @@ public class PlayerController : MonoBehaviour {
             transform.localScale = new Vector3(key, 1, 1);
         }
 
-
         //　プレイヤの速度に応じてアニメーション速度を変える
         this.animator.speed = speedx / 2.0f;
-	}
+
+        //画面外に出た場合は最初から
+        if(transform.position.y < -10){
+            SceneManager.LoadScene("GameScene");
+        }
+    }
+
+    //　ゴールに到達
+    void OnTriggerEnter2D(Collider2D other){
+        Debug.Log("ゴール");
+        SceneManager.LoadScene("clearScene");
+    }
 }
